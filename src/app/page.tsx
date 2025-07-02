@@ -20,9 +20,9 @@ export default function Home() {
   const [editing, setEditing] = useState(false);
   const [hasConfirmed, setHasConfirmed] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [rawApiResponse, setRawApiResponse] = useState<any>(null);
+  const [rawApiResponse, setRawApiResponse] = useState<Record<string, unknown> | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
-  const [formSuccess, setFormSuccess] = useState<string | null>(null);
+  // const [formSuccess, setFormSuccess] = useState<string | null>(null);
 
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -66,15 +66,12 @@ export default function Home() {
       if (data.error) throw new Error(data.error);
       setMetadata(data);
       setEditing(data.confidence < 0.8);
-    } catch (e: any) {
-      setMetadata({
-        title: "",
-        artist: "",
-        year: "",
-        medium: "",
-        description: (e.message || "Unknown error"),
-        confidence: 0,
-      });
+    } catch (e) {
+      if (e instanceof Error) {
+        setFormError(e.message);
+      } else {
+        setFormError("Unknown error");
+      }
     }
     setEditing(true);
     setLoading(false);
@@ -85,14 +82,14 @@ export default function Home() {
     setMetadata({ ...metadata, [e.target.name]: e.target.value });
   };
 
-  const handleEditClick = () => {
-    setEditing(true);
-    setHasConfirmed(false);
-  };
+  // const handleEditClick = () => {
+  //   setEditing(true);
+  //   setHasConfirmed(false);
+  // };
 
   const handleConfirm = async () => {
     setFormError(null);
-    setFormSuccess(null);
+    // setFormSuccess(null);
     if (!metadata?.artist || metadata.artist.trim() === "") {
       setFormError("Artist is required.");
       return;
@@ -105,7 +102,7 @@ export default function Home() {
       return;
     }
     try {
-      const res = await fetch(GOOGLE_APP_SCRIPT, {
+      await fetch(GOOGLE_APP_SCRIPT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -117,8 +114,8 @@ export default function Home() {
         }),
         mode: "no-cors"
       });
-      setFormSuccess("Submitting...");
-    } catch (e: any) {
+      // setFormSuccess("Submitting...");
+    } catch {
       setFormError("Failed to submit to Google Apps Script.");
     }
   };
