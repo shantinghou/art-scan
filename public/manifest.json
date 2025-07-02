@@ -1,0 +1,16 @@
+{
+  "name": "Art Scan",
+  "short_name": "ArtScan",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#171717",
+  "description": "Scan or upload artworks and get structured metadata.",
+  "icons": [
+    {
+      "src": "/assets/images/icon.png",
+      "sizes": "64x64 128x128 256x256 512x512",
+      "type": "image/png"
+    }
+  ]
+} 
