@@ -12,6 +12,8 @@ interface ArtworkMetadata {
   confidence: number; // 0-1
 }
 
+const GOOGLE_APP_SCRIPT = process.env.NEXT_PUBLIC_GOOGLE_APP_SCRIPT;
+
 export default function Home() {
   const [image, setImage] = useState<string | null>(null);
   const [metadata, setMetadata] = useState<ArtworkMetadata | null>(null);
@@ -98,8 +100,12 @@ export default function Home() {
     setEditing(false);
     setHasConfirmed(true);
     // Submit to Google Apps Script
+    if (!GOOGLE_APP_SCRIPT) {
+      setFormError("Google Apps Script URL is not set.");
+      return;
+    }
     try {
-      const res = await fetch("https://script.google.com/macros/s/AKfycby64NwgkeezhPdhGyyyOUB0JXurANOYwLQDEsvyPUglBI_BX74pe2V2ZLjKAZ3Elym7Jg/exec", {
+      const res = await fetch(GOOGLE_APP_SCRIPT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
