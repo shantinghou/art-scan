@@ -162,7 +162,7 @@ export default function Home() {
         </div>
         {image ? (
           <div className="mb-4 flex flex-col items-center mt-10">
-            <div className="relative">
+            <div className="relative mb-5">
               <Image src={image} alt="Artwork preview" width={0} height={0} style={{ width: 'auto', height: 'auto', maxWidth: '100%', maxHeight: '60vh', borderRadius: '0.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }} unoptimized />
               <button
                 type="button"
@@ -311,7 +311,7 @@ export default function Home() {
       {/* {formSuccess && (
         <div className="text-green-600 text-sm mt-2">{formSuccess}</div>
       )} */}
-      <footer className="mt-8 text-xs text-white/40 mb-5">Art Scan Beta &copy; {new Date().getFullYear()}</footer>
+      <footer className="mt-8 text-xs text-white/40 pb-5">Art Scan Beta &copy; {new Date().getFullYear()}</footer>
     </div>
   );
 }

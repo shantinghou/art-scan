@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
                 {
                   inline_data: {
                     mime_type: "image/jpeg",
-                    data: image.replace(/^data:image\/(png|jpe?g|heic);base64,/, ""),
+                    data: image.replace(/^data:image\/(png|jpe?g|heic|heif);base64,/i, ""),
                   },
                 },
                 {
