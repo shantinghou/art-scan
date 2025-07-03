@@ -145,6 +145,15 @@ export default function Home() {
     }
   };
 
+  const handleClear = () => {
+    setImage(null);
+    setRawApiResponse(null);
+    setMetadata(null);
+    setEditing(false);
+    setHasConfirmed(false);
+    setFormError(null);
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center">
       <div className="w-full justify-center bg-[#09192A]/70 items-center p-8 mb-10">
@@ -153,7 +162,17 @@ export default function Home() {
         </div>
         {image ? (
           <div className="mb-4 flex flex-col items-center mt-10">
-            <img src={image} alt="Artwork preview" className="max-w-xs max-h-64 rounded shadow mb-5" />
+            <div className="relative">
+              <Image src={image} alt="Artwork preview" width={320} height={320} className="max-w-xs max-h-64 rounded shadow mb-5" unoptimized />
+              <button
+                type="button"
+                onClick={handleClear}
+                className="absolute top-2 right-2 px-4 py-2 bg-white/70 text-black rounded-full shadow hover:bg-white/90 transition z-10"
+                aria-label="Clear"
+              >
+                <span>Clear</span>
+              </button>
+            </div>
             {rawApiResponse ? (<></>) : (<button
               className="px-4 py-2 bg-white/70 text-white rounded-full flex items-center justify-center hover:bg-white/30"
               onClick={handleAnalyze}
