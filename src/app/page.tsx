@@ -8,6 +8,9 @@ interface ArtworkMetadata {
   artist: string;
   year: string;
   medium: string;
+  price: number;
+  dimensions: string;
+  location: string;
   description: string;
   confidence: number; // 0-1
 }
@@ -64,13 +67,29 @@ export default function Home() {
       const data = await res.json();
       setRawApiResponse(data);
       if (data.error) throw new Error(data.error);
-      setMetadata(data);
+      // Set price to 0 and location to '' by default, let user edit
+      setMetadata({
+        ...data,
+        price: 0,
+        location: '',
+        dimensions: data.dimensions || '',
+      });
       setEditing(data.confidence < 0.8);
     } catch (e) {
       if (e instanceof Error) {
         setFormError(e.message);
       } else {
-        setFormError("Unknown error");
+        setMetadata({
+          title: "",
+          artist: "",
+          year: "",
+          medium: "",
+          price: 0,
+          dimensions: "",
+          location: "",
+          description: "Unknown error",
+          confidence: 0,
+        });
       }
     }
     setEditing(true);
@@ -79,7 +98,11 @@ export default function Home() {
 
   const handleEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (!metadata) return;
-    setMetadata({ ...metadata, [e.target.name]: e.target.value });
+    let value: string | number = e.target.value;
+    if (e.target.name === "price") {
+      value = Number(value);
+    }
+    setMetadata({ ...metadata, [e.target.name]: value });
   };
 
   // const handleEditClick = () => {
@@ -96,7 +119,6 @@ export default function Home() {
     }
     setEditing(false);
     setHasConfirmed(true);
-    // Submit to Google Apps Script
     if (!GOOGLE_APP_SCRIPT) {
       setFormError("Google Apps Script URL is not set.");
       return;
@@ -110,6 +132,9 @@ export default function Home() {
           artist: metadata.artist,
           year: metadata.year || "",
           medium: metadata.medium || "",
+          price: metadata.price || 0,
+          dimensions: metadata.dimensions || "",
+          location: metadata.location || "",
           description: metadata.description || "",
         }),
         mode: "no-cors"
@@ -171,6 +196,18 @@ export default function Home() {
                 <input name="medium" value={metadata.medium} onChange={handleEditChange} className="w-full border rounded px-2 py-1" />
               </label>
               <label>
+                Price:
+                <input name="price" type="number" value={metadata.price} onChange={handleEditChange} className="w-full border rounded px-2 py-1" />
+              </label>
+              <label>
+                Dimensions:
+                <input name="dimensions" value={metadata.dimensions} onChange={handleEditChange} className="w-full border rounded px-2 py-1" />
+              </label>
+              <label>
+                Location:
+                <input name="location" value={metadata.location} onChange={handleEditChange} className="w-full border rounded px-2 py-1" />
+              </label>
+              <label>
                 Description:
                 <textarea name="description" value={metadata.description} onChange={handleEditChange} className="w-full border rounded px-2 py-1" />
               </label>
@@ -182,6 +219,9 @@ export default function Home() {
               <div><b>Artist:</b> {metadata.artist}</div>
               <div><b>Year:</b> {metadata.year}</div>
               <div><b>Medium:</b> {metadata.medium}</div>
+              <div><b>Price:</b> {metadata.price}</div>
+              <div><b>Dimensions:</b> {metadata.dimensions}</div>
+              <div><b>Location:</b> {metadata.location}</div>
               <div><b>Description:</b> {metadata.description}</div>
               <div className="mt-2 text-xs text-gray-500">AI Confidence: {(metadata.confidence * 100).toFixed(0)}%</div>
               {metadata.confidence < 0.8 && (
@@ -213,7 +253,6 @@ export default function Home() {
       <input
         type="file"
         accept="image/*"
-        capture="environment"
         className="hidden"
         ref={fileInputRef}
         onChange={handleImageChange}

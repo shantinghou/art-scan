@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
                   },
                 },
                 {
-                  text: `Extract the following metadata from this artwork image. If unsure, make your best guess. Return a JSON object with these fields: title, artist, year, medium, description, confidence (0-1, your confidence in the result).`,
+                  text: `Extract the following metadata from this artwork image. If unsure, make your best guess. Return a JSON object with these fields: title, artist, year, medium, dimensions, description, confidence (0-1, your confidence in the result).`,
                 },
               ],
             },
